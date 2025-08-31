@@ -53,16 +53,16 @@ def force_disp_plot2(EA,z,L,Ks,x,y,file_name):
     ax.yaxis.set_tick_params(which='minor', size=tick_mn_sz, width=tick_width, direction='in')
     
     # plot
-    ax.plot(x,y, linewidth=plt_line_width)
     x2=-np.linspace(0.0,60,300);
     y2=EA/L**3*(z**2*x2+1.5*z*x2**2+0.5*x2**3)+Ks*x2;
     ax.plot(-x2,-y2, linewidth=plt_line_width)
+    ax.plot(x,y, linewidth=plt_line_width)
     plt.grid()
     
     # Add the x and y-axis labels
-    ax.set_xlabel('-w/z')
-    ax.set_ylabel('-Wl^3/EAz^3')
-    ax.legend(['Incremental', 'Exact'])
+    ax.set_xlabel('-w')
+    ax.set_ylabel('-W')
+    ax.legend(['Exact','Numerical'])
     
     # Save figure
     plt.savefig('./'+file_name+'.svg', transparent=False, bbox_inches='tight')
@@ -116,4 +116,4 @@ for i in range(0,14):
         w=w-g/Kt;
         N=EA*(z/L*w/L+0.5*(w/L)**2);
         g=N*(z+w)/L+Ks*w-dW*(i+1);
-force_disp_plot2(EA,z,L,Ks,-np.array(wList),-np.array(WList),'HW2P3')
+force_disp_plot2(EA,z,L,Ks,-np.array(wList),-np.array(WList),'HW2P4')
