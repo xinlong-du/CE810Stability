@@ -67,53 +67,34 @@ def force_disp_plot2(EA,z,L,Ks,x,y,file_name):
     # Save figure
     plt.savefig('./'+file_name+'.svg', transparent=False, bbox_inches='tight')
 
-#%% Problem 1    
-x=np.linspace(0.0,2.4,100);
-y=x-1.5*x**2+0.5*x**3;
-force_disp_plot(x,y,'HW2P1')
-
-#%% Problem 2
-x=np.linspace(0.0,2.1,100);
-y=1.5*x-1.5*x**2+0.5*x**3;
-force_disp_plot(x,y,'HW2P2')
-
-#%% Problem 3
+#%% Problem 4
 EA=5e7;
 z=25;
 L=2500;
 Ks=1.35;
-dW=-7;
-
-#initial condition
-w=0;
-N=0;
-wList=[];
-WList=[];
-for i in range(0,14):
-    wList.append(w);
-    WList.append(dW*i);
-    Kt=EA/L*(z+w)**2/L**2+N/L+Ks;
-    w=w+dW/Kt;
-    N=EA*(z/L*w/L+0.5*(w/L)**2);
-force_disp_plot2(EA,z,L,Ks,-np.array(wList),-np.array(WList),'HW2P3')
-
-#%% Problem 4
 tol=1e-4; #tolerance for Newton-Rapson iteration
+
 #initial condition
-w=0;
+p=np.array([0,0]); #[u,w]
 N=0;
+
+#force increment vector dW=-7; dU=70;
+dq=np.array([70,-7])
+
 wList=[];
 WList=[];
-for i in range(0,14):
-    wList.append(w);
-    WList.append(dW*i);
-    Kt=EA/L*(z+w)**2/L**2+N/L+Ks;
-    w=w+dW/Kt;
-    N=EA*(z/L*w/L+0.5*(w/L)**2);
-    g=N*(z+w)/L+Ks*w-dW*(i+1);
-    while abs(g)>tol:
-        Kt=EA/L*(z+w)**2/L**2+N/L+Ks;
-        w=w-g/Kt;
-        N=EA*(z/L*w/L+0.5*(w/L)**2);
-        g=N*(z+w)/L+Ks*w-dW*(i+1);
-force_disp_plot2(EA,z,L,Ks,-np.array(wList),-np.array(WList),'HW2P4')
+for i in range(0,17):
+    wList.append(p[1]);
+    WList.append(dq[1]*i);
+    
+    beta=(z+p[1])/L;
+    Kt=EA/L*np.array([[1,-beta],[-beta,beta**2+Ks*L/EA]])+np.array([[0,0],[0,N/L]]);
+    p=p+np.matmul(np.linalg.inv(Kt),dq);
+    N=EA*(-p[0]/L+z/L*p[1]/L+0.5*(p[1]/L)**2);
+    g=N/L*np.array([-L,z+p[1]])+np.array([0,Ks*p[1]])-dq*(i+1);
+    while np.linalg.norm(g)>tol:
+        Kt=EA/L*np.array([[1,-beta],[-beta,beta**2+Ks*L/EA]])+np.array([[0,0],[0,N/L]]);
+        p=p-np.matmul(np.linalg.inv(Kt),g);
+        N=EA*(-p[0]/L+z/L*p[1]/L+0.5*(p[1]/L)**2);
+        g=N/L*np.array([-L,z+p[1]])+np.array([0,Ks*p[1]])-dq*(i+1);
+force_disp_plot2(EA,z,L,Ks,-np.array(wList),-np.array(WList),'HW3P1')
