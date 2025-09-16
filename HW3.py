@@ -33,7 +33,7 @@ def force_disp_plot2(x,y,hon,ver,file_name):
     ax.yaxis.set_tick_params(which='minor', size=tick_mn_sz, width=tick_width, direction='in')
     
     # plot
-    ax.plot(x,y, linewidth=plt_line_width)
+    ax.plot(x,y,marker='o',markersize=3, linewidth=plt_line_width)
     plt.grid()
     
     # Add the x and y-axis labels
@@ -47,7 +47,7 @@ def force_disp_plot2(x,y,hon,ver,file_name):
 EA=5e7;
 z=25;
 L=2500;
-Ks=1.35;
+Ks=2.35;
 tol=1e-4; #tolerance for Newton-Rapson iteration
 
 #initial condition
